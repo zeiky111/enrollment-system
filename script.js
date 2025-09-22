@@ -8,8 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
         subjects: document.getElementById('tab-subjects'),
         enrollments: document.getElementById('tab-enrollments'),
     };
-
-    // Modal helpers
+ 
     const formModal = document.getElementById('form-modal');
     const formModalBody = document.getElementById('form-modal-body');
     const formModalClose = document.getElementById('form-modal-close');
@@ -93,10 +92,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <h3>${editData ? 'Edit Student' : 'Add Student'}</h3>
                 <div id="student-error" class="error-message" style="display: none;"></div>
                 <div id="student-success" class="success-message" style="display: none;"></div>
-                ${editData ? `
                 <label>ID</label>
-                <input type="number" id="student-id" value="${editData.stud_id}" readonly />
-                ` : ''}
+                <input type="number" id="student-id" value="${editData ? editData.stud_id : ''}" ${editData ? 'readonly' : 'required'} />
                 <label>First Name</label>
                 <input type="text" id="student-fname" value="${editData ? editData.first_name : ''}" required />
                 <label>Middle Name</label>
@@ -127,6 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
                 try {
+                    const stud_id = document.getElementById('student-id').value;
                     let url, body;
                     if (editData) {
                         url = API_BASE + 'Students/updateStudent.php';
@@ -137,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         };
                     } else {
                         url = API_BASE + 'Students/addStudent.php';
-                        body = { first_name, middle_name, last_name, program_id, allowance };
+                        body = { stud_id, first_name, middle_name, last_name, program_id, allowance };
                     }
                     console.log('Sending:', body, 'to', url);
                     const res = await fetch(url, {
@@ -346,13 +344,26 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- YEARS & SEMESTERS ---
     async function loadYearsAndSemesters() {
         content.innerHTML = `<h2>Years & Semesters</h2>
-        <button id="btn-add-semester">Add Semester</button>
+        <div style="margin-bottom: 20px;">
+            <button id="btn-add-year">Add Year</button>
+           
+        </div>
+
+        <h3>Years</h3>
+        <table>
+            <thead><tr><th>ID</th><th>Name</th><th>Actions</th></tr></thead>
+            <tbody id="years-tbody"></tbody>
+        </table>
+ <button id="btn-add-semester">Add Semester</button>
+        <h3>Semesters</h3>
         <table>
             <thead><tr><th>ID</th><th>Name</th><th>Actions</th></tr></thead>
             <tbody id="semesters-tbody"></tbody>
         </table>`;
+
+        document.getElementById('btn-add-year').onclick = () => renderYearForm();
         document.getElementById('btn-add-semester').onclick = () => renderSemesterForm();
-        await populateSemestersTable();
+        await Promise.all([populateYearsTable(), populateSemestersTable()]);
     }
     async function populateSemestersTable() {
         const tbody = document.getElementById('semesters-tbody');
@@ -806,4 +817,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     setActiveTab('students');
-});
+});  
