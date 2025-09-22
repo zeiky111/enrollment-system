@@ -1,6 +1,8 @@
 <?php
-header('Content-Type: application/json');
-require '../db.php';
+
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json");
+require "../connect.php";
 
 try {
     $sql = "SELECT program_id, program_name FROM program_tbl ORDER BY program_id ASC";

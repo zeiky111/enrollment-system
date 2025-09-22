@@ -1,47 +1,46 @@
 <?php
+ 
 
-
+header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
-include("db.php"); 
+require "../connect.php";
 
 try {
-    
     $data = json_decode(file_get_contents("php://input"), true);
 
-    if (!isset($data["semester_id"]) || empty($data["semester_id"])) {
+     
+    if (!isset($data["sem_id"]) || empty($data["sem_id"])) {
         echo json_encode([
-            "status" => "error",
+            "success" => false,
             "message" => "Semester ID is required"
         ]);
         exit;
     }
 
-    $semester_id = $data["semester_id"];
-
-     
-    $check = $conn->prepare("SELECT * FROM semester_tbl WHERE semester_id = ?");
-    $check->execute([$semester_id]);
+    $sem_id = $data["sem_id"];
+ 
+    $check = $pdo->prepare("SELECT * FROM semester_tbl WHERE sem_id = ?");
+    $check->execute([$sem_id]);
 
     if ($check->rowCount() === 0) {
         echo json_encode([
-            "status" => "error",
+            "success" => false,
             "message" => "Semester not found"
         ]);
         exit;
     }
 
-     
-    $stmt = $conn->prepare("DELETE FROM semester_tbl WHERE semester_id = ?");
-    $stmt->execute([$semester_id]);
+    $stmt = $pdo->prepare("DELETE FROM semester_tbl WHERE sem_id = ?");
+    $stmt->execute([$sem_id]);
 
     echo json_encode([
-        "status" => "success",
+        "success" => true,
         "message" => "Semester deleted successfully"
     ]);
 
 } catch (Exception $e) {
     echo json_encode([
-        "status" => "error",
+        "success" => false,
         "message" => "Error: " . $e->getMessage()
     ]);
 }

@@ -1,6 +1,8 @@
 <?php
-header('Content-Type: application/json');
-require '../db.php';
+
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json");
+require "../connect.php";
 
 $data = json_decode(file_get_contents('php://input'), true);
 $stud_id = intval($data['stud_id'] ?? 0);
@@ -20,30 +22,31 @@ try {
         exit;
     }
 
-    
+     
     $subjectCheck = $pdo->prepare("SELECT COUNT(*) FROM subject_tbl WHERE subject_id = ?");
     $subjectCheck->execute([$subject_id]);
     if ($subjectCheck->fetchColumn() == 0) {
         echo json_encode(['success' => false, 'message' => 'Subject not found']);
         exit;
-    } 
+    }
 
-    $check = $pdo->prepare("SELECT COUNT(*) FROM student_load WHERE stud_id = ? AND subject_id = ?");
+     
+    $check = $pdo->prepare("SELECT COUNT(*) FROM enrollment_tbl WHERE stud_id = ? AND subject_id = ?");
     $check->execute([$stud_id, $subject_id]);
     if ($check->fetchColumn() > 0) {
         echo json_encode(['success' => false, 'message' => 'Student already enrolled in this subject']);
         exit;
     }
 
-    
-    $stmt = $pdo->prepare("INSERT INTO student_load (stud_id, subject_id) VALUES (?, ?)");
+     
+    $stmt = $pdo->prepare("INSERT INTO enrollment_tbl (stud_id, subject_id) VALUES (?, ?)");
     $stmt->execute([$stud_id, $subject_id]);
-    $load_id = $pdo->lastInsertId();
+    $enrollment_id = $pdo->lastInsertId();
 
     echo json_encode([
         'success' => true,
         'message' => 'Enrollment successful',
-        'load_id' => $load_id
+        'enrollment_id' => $enrollment_id
     ]);
 } catch (Exception $e) {
     echo json_encode([
@@ -52,4 +55,3 @@ try {
     ]);
 }
 ?>
-

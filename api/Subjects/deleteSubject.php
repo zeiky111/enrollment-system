@@ -1,6 +1,8 @@
 <?php
-header('Content-Type: application/json');
-require '../db.php';
+
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json");
+require "../connect.php";
 
 $data = json_decode(file_get_contents("php://input"), true);
 $subject_id = intval($data['subject_id'] ?? 0);

@@ -1,8 +1,9 @@
 <?php
+
+header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
 require "../connect.php";
 
- 
 $sql = "SELECT 
             s.stud_id, 
             s.first_name, 
@@ -16,6 +17,13 @@ $sql = "SELECT
 try {
     $stmt = $pdo->query($sql);
     $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+   
+    foreach ($students as &$student) {
+        $student['name'] = $student['first_name'] . ' ' . 
+                           ($student['middle_name'] ? $student['middle_name'] . ' ' : '') . 
+                           $student['last_name'];
+    }
 
     echo json_encode([
         "success" => true,

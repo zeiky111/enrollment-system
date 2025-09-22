@@ -1,19 +1,21 @@
-<?php 
+<?php
+
+header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
-include("db.php");  
+require "../connect.php";
 
 try {
-    $stmt = $conn->query("SELECT * FROM semester_tbl ORDER BY semester_id ASC");
+    $stmt = $pdo->query("SELECT sem_id AS sem_id, sem_name AS sem_name FROM semester_tbl ORDER BY sem_id ASC");
     $semesters = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     echo json_encode([
-        "status" => "success",
+        "success" => true,
         "data" => $semesters
     ]);
 
 } catch (Exception $e) {
     echo json_encode([
-        "status" => "error",
+        "success" => false,
         "message" => "Failed to fetch semesters: " . $e->getMessage()
     ]);
 }

@@ -1,6 +1,8 @@
 <?php
-header('Content-Type: application/json');
-require '../db.php';
+
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json");
+require "../connect.php";
 
 try {
     $sql = "SELECT s.subject_id, s.subject_code, s.subject_name, sem.semester_name, sem.semester_id

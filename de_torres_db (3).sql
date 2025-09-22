@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 19, 2025 at 03:48 PM
+-- Generation Time: Sep 21, 2025 at 05:24 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.0.28
 
@@ -65,6 +65,25 @@ CREATE TABLE `bsis_students` (
 --
 CREATE TABLE `bsn_students` (
 );
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `enrollment_tbl`
+--
+
+CREATE TABLE `enrollment_tbl` (
+  `enrollment_id` int(11) NOT NULL,
+  `stud_id` int(11) NOT NULL,
+  `subject_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `enrollment_tbl`
+--
+
+INSERT INTO `enrollment_tbl` (`enrollment_id`, `stud_id`, `subject_id`) VALUES
+(1, 1, 3);
 
 -- --------------------------------------------------------
 
@@ -345,6 +364,14 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 --
 
 --
+-- Indexes for table `enrollment_tbl`
+--
+ALTER TABLE `enrollment_tbl`
+  ADD PRIMARY KEY (`enrollment_id`),
+  ADD KEY `stud_id` (`stud_id`),
+  ADD KEY `subject_id` (`subject_id`);
+
+--
 -- Indexes for table `institute_tbl`
 --
 ALTER TABLE `institute_tbl`
@@ -393,8 +420,25 @@ ALTER TABLE `year_tbl`
   ADD PRIMARY KEY (`year_id`);
 
 --
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `enrollment_tbl`
+--
+ALTER TABLE `enrollment_tbl`
+  MODIFY `enrollment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `enrollment_tbl`
+--
+ALTER TABLE `enrollment_tbl`
+  ADD CONSTRAINT `enrollment_tbl_ibfk_1` FOREIGN KEY (`stud_id`) REFERENCES `student_tbl` (`stud_id`),
+  ADD CONSTRAINT `enrollment_tbl_ibfk_2` FOREIGN KEY (`subject_id`) REFERENCES `subject_tbl` (`subject_id`);
 
 --
 -- Constraints for table `program_tbl`
